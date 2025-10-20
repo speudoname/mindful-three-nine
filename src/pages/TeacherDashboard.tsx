@@ -159,7 +159,7 @@ export default function TeacherDashboard() {
           <TabsContent value="courses" className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">My Courses</h2>
-              <Button>
+              <Button onClick={() => navigate("/teacher/create-course")}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create Course
               </Button>
@@ -189,8 +189,26 @@ export default function TeacherDashboard() {
                         <span className="text-muted-foreground">
                           {course.is_published ? "Published" : "Draft"}
                         </span>
-                        <Button variant="outline" size="sm">
-                          Edit
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={async () => {
+                            try {
+                              const { error } = await supabase
+                                .from("courses")
+                                .update({ is_published: !course.is_published })
+                                .eq("id", course.id);
+                              
+                              if (error) throw error;
+                              toast.success(course.is_published ? "Course unpublished" : "Course published!");
+                              loadTeacherData();
+                            } catch (error: any) {
+                              console.error("Error updating course:", error);
+                              toast.error("Failed to update course");
+                            }
+                          }}
+                        >
+                          {course.is_published ? "Unpublish" : "Publish"}
                         </Button>
                       </div>
                     </CardContent>
@@ -203,7 +221,7 @@ export default function TeacherDashboard() {
           <TabsContent value="meditations" className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">Standalone Meditations</h2>
-              <Button>
+              <Button onClick={() => navigate("/teacher/create-meditation")}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create Meditation
               </Button>
@@ -231,10 +249,28 @@ export default function TeacherDashboard() {
                     <CardContent>
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-muted-foreground">
-                          {meditation.duration_minutes} min
+                          {meditation.duration_minutes} min • {meditation.is_published ? "Published" : "Draft"}
                         </span>
-                        <Button variant="outline" size="sm">
-                          Edit
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={async () => {
+                            try {
+                              const { error } = await supabase
+                                .from("standalone_meditations")
+                                .update({ is_published: !meditation.is_published })
+                                .eq("id", meditation.id);
+                              
+                              if (error) throw error;
+                              toast.success(meditation.is_published ? "Meditation unpublished" : "Meditation published!");
+                              loadTeacherData();
+                            } catch (error: any) {
+                              console.error("Error updating meditation:", error);
+                              toast.error("Failed to update meditation");
+                            }
+                          }}
+                        >
+                          {meditation.is_published ? "Unpublish" : "Publish"}
                         </Button>
                       </div>
                     </CardContent>

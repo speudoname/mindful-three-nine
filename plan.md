@@ -13,11 +13,11 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ---
 
-## 📊 Overall Progress: 48%
+## 📊 Overall Progress: 55%
 
-- ✅ **Completed:** 3 phases
-- 🚧 **In Progress:** 1 phase (Phase 4 - 85% complete)
-- ⏳ **Not Started:** 7 phases remaining
+- ✅ **Completed:** 4 phases  
+- 🚧 **In Progress:** 0 phases
+- ⏳ **Not Started:** 6 phases remaining
 
 ---
 
@@ -120,7 +120,7 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ---
 
-## Phase 4: Guided Content System 🚧
+## Phase 4: Guided Content System ✅
 
 **Goal:** Teachers can upload courses and meditations; users can access them.
 
@@ -137,16 +137,16 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ### Teacher Dashboard
 - [x] Teacher registration/approval flow
-- [x] Upload audio (FileUpload component ready)
-- [x] Upload intro video (FileUpload component ready)
-- [ ] Assign categories/tags (UI needed)
-- [x] Define scheduling mode (database ready):
+- [x] Upload audio (required)
+- [x] Upload intro video (optional)
+- [x] Assign categories/tags
+- [x] Define scheduling mode:
   - [x] Linear (daily unlock)
   - [x] Day-part windows
   - [x] Freeform
   - [x] Challenge mode
-- [ ] Publish/unpublish courses (UI needed)
-- [ ] View analytics dashboard
+- [x] Publish/unpublish courses
+- [ ] View analytics dashboard (deferred to Phase 8)
 
 ### User Experience
 - [x] Browse courses by category/tag
@@ -158,11 +158,11 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 - [x] Standalone meditation browser
 - [x] Filter by teacher/theme/duration
 
-**Status:** Core functionality complete! File upload for teachers and advanced features remain.
+**Completed:** Phase 4 Core Features Done!
 
 ---
 
-## Phase 5: Tracking & Gamification
+## Phase 5: Tracking & Gamification 🚧
 
 **Goal:** Personal progress tracking with streaks, badges, and goals.
 
@@ -172,7 +172,7 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 - [ ] `streaks` table
 - [ ] `badges` table
 - [ ] `user_badges` table
-- [ ] `activity_history` table (aggregated view)
+- [ ] `activity_history` aggregate view
 
 ### Features
 - [ ] Set practice plan (once/twice daily, custom)
@@ -184,7 +184,7 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 - [ ] Visual analytics (charts)
 - [ ] Adherence tracking (actual vs. plan)
 
-**Estimated Completion:** TBD
+**Status:** Ready to begin!
 
 ---
 
@@ -366,13 +366,12 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ## 📌 Current Sprint Focus
 
-**Status:** Phase 4 Nearly Complete (Guided Content System - 85%)
+**Status:** Phase 4 Complete! → Moving to Phase 5 (Tracking & Gamification)
 
-**Remaining Tasks:**
-1. Add course creation/editing UI for teachers
-2. Implement category/tag assignment UI
-3. Build publish/unpublish functionality
-4. Then move to Phase 5: Tracking & Gamification
+**Next 3 Tasks:**
+1. Create practice plans database schema
+2. Build streaks and badge system
+3. Add visual analytics and progress tracking dashboard
 
 ---
 

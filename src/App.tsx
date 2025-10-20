@@ -13,6 +13,8 @@ import TeacherDashboard from "./pages/TeacherDashboard";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import MeditationDetail from "./pages/MeditationDetail";
+import CreateCourse from "./pages/CreateCourse";
+import CreateMeditation from "./pages/CreateMeditation";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,8 @@ const App = () => (
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             <Route path="/breathing" element={<ProtectedRoute><BreathingExercise /></ProtectedRoute>} />
             <Route path="/teacher" element={<ProtectedRoute><TeacherDashboard /></ProtectedRoute>} />
+            <Route path="/teacher/create-course" element={<ProtectedRoute><CreateCourse /></ProtectedRoute>} />
+            <Route path="/teacher/create-meditation" element={<ProtectedRoute><CreateMeditation /></ProtectedRoute>} />
             <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
             <Route path="/courses/:courseId" element={<ProtectedRoute><CourseDetail /></ProtectedRoute>} />
             <Route path="/meditations/:meditationId" element={<ProtectedRoute><MeditationDetail /></ProtectedRoute>} />
