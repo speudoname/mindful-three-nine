@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      breathing_presets: {
+        Row: {
+          created_at: string
+          description: string
+          exhale_seconds: number
+          hold_seconds: number
+          id: string
+          inhale_seconds: number
+          name: string
+          purpose: string
+          recommended_rounds: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          exhale_seconds: number
+          hold_seconds: number
+          id?: string
+          inhale_seconds: number
+          name: string
+          purpose: string
+          recommended_rounds?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          exhale_seconds?: number
+          hold_seconds?: number
+          id?: string
+          inhale_seconds?: number
+          name?: string
+          purpose?: string
+          recommended_rounds?: number
+        }
+        Relationships: []
+      }
+      breathing_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          exhale_seconds: number
+          hold_seconds: number
+          id: string
+          inhale_seconds: number
+          pattern_name: string
+          rounds_completed: number
+          started_at: string
+          total_duration_seconds: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          exhale_seconds: number
+          hold_seconds: number
+          id?: string
+          inhale_seconds: number
+          pattern_name: string
+          rounds_completed?: number
+          started_at?: string
+          total_duration_seconds?: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          exhale_seconds?: number
+          hold_seconds?: number
+          id?: string
+          inhale_seconds?: number
+          pattern_name?: string
+          rounds_completed?: number
+          started_at?: string
+          total_duration_seconds?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       meditation_sessions: {
         Row: {
           abandoned_at: string | null

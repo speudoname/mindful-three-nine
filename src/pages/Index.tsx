@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import MeditationTimer from "@/components/MeditationTimer";
 import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const { user, signOut } = useAuth();
@@ -65,14 +66,25 @@ const Index = () => {
 
             {/* CTA */}
             <div className="space-y-4">
-              <Button 
-                size="lg" 
-                className="bg-gradient-sacred hover:shadow-glow transition-all text-lg px-8 py-6 h-auto"
-                onClick={() => setShowTimer(true)}
-              >
-                Begin Your Practice
-              </Button>
-              <p className="text-sm text-muted-foreground">No distractions. Just you and stillness.</p>
+              <div className="flex gap-4 justify-center">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-sacred hover:shadow-glow transition-all text-lg px-8 py-6 h-auto"
+                  onClick={() => setShowTimer(true)}
+                >
+                  Meditation Timer
+                </Button>
+                <Link to="/breathing">
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="text-lg px-8 py-6 h-auto"
+                  >
+                    Breathing Exercises
+                  </Button>
+                </Link>
+              </div>
+              <p className="text-sm text-muted-foreground">Choose your path to stillness</p>
             </div>
           </div>
         </main>
