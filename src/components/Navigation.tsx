@@ -4,7 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useTokens } from "@/hooks/useTokens";
 import { TokenPurchaseDialog } from "./TokenPurchaseDialog";
-import { ChevronLeft, Home, Sparkles, BookOpen, TrendingUp, Coins } from "lucide-react";
+import { ChevronLeft, Home, Sparkles, BookOpen, TrendingUp, Coins, User } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Navigation({ showBack = false }: { showBack?: boolean }) {
   const { user, signOut } = useAuth();
@@ -72,12 +80,31 @@ export default function Navigation({ showBack = false }: { showBack?: boolean })
                 {tokensLoading ? '...' : balance}
               </Button>
             </TokenPurchaseDialog>
-            <span className="text-sm text-muted-foreground hidden lg:inline">
-              {user?.email}
-            </span>
-            <Button variant="outline" size="sm" onClick={signOut}>
-              Sign Out
-            </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <User className="h-4 w-4 md:mr-2" />
+                  <span className="hidden md:inline">{user?.email?.split('@')[0]}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  <User className="h-4 w-4 mr-2" />
+                  Profile & Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/progress")}>
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Progress
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={signOut} className="text-red-500">
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
