@@ -758,6 +758,66 @@ export type Database = {
           },
         ]
       }
+      token_prices: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          token_cost: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          token_cost?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          token_cost?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      token_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string
+          id: string
+          related_entity_id: string | null
+          related_entity_type: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description: string
+          id?: string
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string
+          id?: string
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_badges: {
         Row: {
           badge_id: string
@@ -823,6 +883,30 @@ export type Database = {
           },
         ]
       }
+      user_tokens: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -838,6 +922,20 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      process_token_purchase: {
+        Args: { _amount: number; _payment_method: string; _user_id: string }
+        Returns: Json
+      }
+      spend_tokens: {
+        Args: {
+          _amount: number
+          _description: string
+          _entity_id?: string
+          _entity_type?: string
+          _user_id: string
+        }
+        Returns: Json
       }
       update_streak: {
         Args: { _activity_date: string; _streak_type: string; _user_id: string }

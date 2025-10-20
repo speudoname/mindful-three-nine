@@ -1,12 +1,16 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import { ChevronLeft, Home, Sparkles, BookOpen, TrendingUp, User } from "lucide-react";
+import { useTokens } from "@/hooks/useTokens";
+import { TokenPurchaseDialog } from "./TokenPurchaseDialog";
+import { ChevronLeft, Home, Sparkles, BookOpen, TrendingUp, Coins } from "lucide-react";
 
 export default function Navigation({ showBack = false }: { showBack?: boolean }) {
   const { user, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const { balance, loading: tokensLoading } = useTokens();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -62,7 +66,13 @@ export default function Navigation({ showBack = false }: { showBack?: boolean })
           </nav>
 
           <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground hidden sm:inline">
+            <TokenPurchaseDialog>
+              <Button variant="outline" size="sm" className="hidden sm:flex">
+                <Coins className="h-4 w-4 mr-2 text-primary" />
+                {tokensLoading ? '...' : balance}
+              </Button>
+            </TokenPurchaseDialog>
+            <span className="text-sm text-muted-foreground hidden lg:inline">
               {user?.email}
             </span>
             <Button variant="outline" size="sm" onClick={signOut}>

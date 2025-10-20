@@ -13,11 +13,11 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ---
 
-## 📊 Overall Progress: 75%
+## 📊 Overall Progress: 80%
 
-- ✅ **Completed:** 5 phases + Core UI/Navigation
+- ✅ **Completed:** 6 phases + Core UI/Navigation
 - 🚧 **In Progress:** 0 phases
-- ⏳ **Not Started:** 5 phases remaining
+- ⏳ **Not Started:** 4 phases remaining
 
 ---
 
@@ -187,28 +187,31 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ---
 
-## Phase 6: Token Economy & Monetization
+## Phase 6: Token Economy & Monetization ✅
 
 **Goal:** Token-based access with free and premium tiers.
 
 ### Database
-- [ ] `token_ledger` table
-- [ ] `token_config` table (admin settings)
-- [ ] `subscription_tiers` table
-- [ ] `user_subscriptions` table
-- [ ] `purchases` table
+- [x] `user_tokens` table
+- [x] `token_transactions` table
+- [x] `token_prices` table
+- [x] Database functions for purchase/spend
+- [ ] `subscription_tiers` table (deferred)
+- [ ] `user_subscriptions` table (deferred)
 
 ### Features
-- [ ] Token balance display
-- [ ] Token costs per activity (configurable by admin)
-- [ ] Monthly allowance (Free vs Premium)
-- [ ] Purchase tokens (in-app)
-- [ ] Upgrade to Premium
-- [ ] Transaction history
+- [x] Token balance display in navigation
+- [x] Real-time token balance updates
+- [x] Purchase tokens dialog (dummy payment)
+- [x] Token transaction tracking
+- [x] `process_token_purchase()` function
+- [x] `spend_tokens()` function
+- [ ] Premium content gating (in progress)
+- [ ] Transaction history page
+- [ ] Admin token pricing controls
 - [ ] Auto-debit on activity
-- [ ] Admin controls (set costs, limits, promotions)
 
-**Estimated Completion:** TBD
+**Completed:** Core token economy system with dummy payments! Premium gating and admin controls next.
 
 ---
 
