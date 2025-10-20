@@ -93,6 +93,26 @@ const MeditationTimer = ({ onBack }: MeditationTimerProps) => {
           total_minutes_meditated: minutesMeditated
         })
         .eq('id', sessionId);
+
+      // Update streak and check for badges
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        await supabase.rpc('update_streak', {
+          _user_id: user?.id,
+          _activity_date: today,
+          _streak_type: 'meditation'
+        });
+        await supabase.rpc('update_streak', {
+          _user_id: user?.id,
+          _activity_date: today,
+          _streak_type: 'overall'
+        });
+        await supabase.rpc('check_and_award_badges', {
+          _user_id: user?.id
+        });
+      } catch (error) {
+        console.error('Error updating streak/badges:', error);
+      }
     }
 
     toast({

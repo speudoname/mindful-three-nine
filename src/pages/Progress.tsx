@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress as ProgressBar } from "@/components/ui/progress";
-import { Loader2, Flame, Trophy, Target, Calendar, TrendingUp } from "lucide-react";
+import { Loader2, Flame, Trophy, Target, Calendar, TrendingUp, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import PracticePlanDialog from "@/components/PracticePlanDialog";
+import GoalDialog from "@/components/GoalDialog";
 
 export default function Progress() {
   const { user } = useAuth();
@@ -273,6 +275,11 @@ export default function Progress() {
           </TabsContent>
 
           <TabsContent value="goals" className="space-y-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Active Goals</h3>
+              <GoalDialog onUpdate={loadProgressData} />
+            </div>
+            
             {goals.length === 0 ? (
               <Card>
                 <CardContent className="pt-6 text-center">
@@ -280,7 +287,7 @@ export default function Progress() {
                   <p className="text-muted-foreground mb-4">
                     Set goals to track your progress
                   </p>
-                  <Button>Create Goal</Button>
+                  <GoalDialog onUpdate={loadProgressData} />
                 </CardContent>
               </Card>
             ) : (
@@ -288,14 +295,34 @@ export default function Progress() {
                 <Card key={goal.id}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle>{goal.title}</CardTitle>
-                      <Badge variant="outline" className="capitalize">
-                        {goal.goal_type}
-                      </Badge>
+                      <div className="flex-1">
+                        <CardTitle>{goal.title}</CardTitle>
+                        {goal.description && (
+                          <CardDescription className="mt-1">{goal.description}</CardDescription>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="capitalize">
+                          {goal.goal_type.replace('_', ' ')}
+                        </Badge>
+                        <GoalDialog existingGoal={goal} onUpdate={loadProgressData} />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={async () => {
+                            try {
+                              await supabase.from("goals").delete().eq("id", goal.id);
+                              toast.success("Goal deleted");
+                              loadProgressData();
+                            } catch (error) {
+                              toast.error("Failed to delete goal");
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    {goal.description && (
-                      <CardDescription>{goal.description}</CardDescription>
-                    )}
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <div className="flex justify-between text-sm mb-2">
@@ -308,7 +335,7 @@ export default function Progress() {
                       value={(goal.current_value / goal.target_value) * 100} 
                     />
                     {goal.deadline && (
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground mt-2">
                         Deadline: {new Date(goal.deadline).toLocaleDateString()}
                       </p>
                     )}
@@ -350,9 +377,12 @@ export default function Progress() {
                   </div>
                 </div>
 
-                {practicePlan && (
-                  <div className="pt-4 border-t">
-                    <p className="text-sm font-medium mb-2">Practice Plan</p>
+                <div className="pt-4 border-t">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-medium">Practice Plan</p>
+                    <PracticePlanDialog existingPlan={practicePlan} onUpdate={loadProgressData} />
+                  </div>
+                  {practicePlan ? (
                     <div className="space-y-1 text-sm">
                       <p className="capitalize">Frequency: {practicePlan.frequency.replace('_', ' ')}</p>
                       {practicePlan.target_sessions_per_week && (
@@ -363,8 +393,10 @@ export default function Progress() {
                       )}
                       <p>Grace days: {practicePlan.grace_days}</p>
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No practice plan set</p>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

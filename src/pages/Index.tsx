@@ -21,6 +21,9 @@ const Index = () => {
             <h1 className="text-xl font-semibold">Sacred Practice</h1>
           </div>
           <div className="flex items-center gap-3">
+            <Link to="/progress">
+              <Button variant="ghost" size="sm">Progress</Button>
+            </Link>
             <span className="text-sm text-muted-foreground">{user?.email}</span>
             <Button variant="outline" size="sm" onClick={signOut}>Sign Out</Button>
           </div>
