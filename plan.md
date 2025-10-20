@@ -13,11 +13,11 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ---
 
-## 📊 Overall Progress: 80%
+## 📊 Overall Progress: 85%
 
-- ✅ **Completed:** 6 phases + Core UI/Navigation
+- ✅ **Completed:** 6 phases (Authentication, Timer, Breathing, Content, Gamification, Token Economy)
 - 🚧 **In Progress:** 0 phases
-- ⏳ **Not Started:** 4 phases remaining
+- ⏳ **Not Started:** 4 phases remaining (Downloads, Admin Panel, Notifications, Profile)
 
 ---
 
@@ -189,29 +189,30 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ## Phase 6: Token Economy & Monetization ✅
 
-**Goal:** Token-based access with free and premium tiers.
+**Goal:** Token-based payment system with premium content gating.
 
 ### Database
-- [x] `user_tokens` table
-- [x] `token_transactions` table
-- [x] `token_prices` table
-- [x] Database functions for purchase/spend
-- [ ] `subscription_tiers` table (deferred)
-- [ ] `user_subscriptions` table (deferred)
+- [x] `user_tokens` table (balance tracking)
+- [x] `token_transactions` table (transaction history)
+- [x] `user_purchases` table (content ownership)
+- [x] `token_cost` columns on courses & meditations
+- [x] `process_token_purchase()` function
+- [x] `spend_tokens()` function
+- [x] `purchase_content()` function
 
 ### Features
 - [x] Token balance display in navigation
 - [x] Real-time token balance updates
-- [x] Purchase tokens dialog (dummy payment)
+- [x] Purchase tokens dialog (dummy payment with packages)
 - [x] Token transaction tracking
-- [x] `process_token_purchase()` function
-- [x] `spend_tokens()` function
-- [ ] Premium content gating (in progress)
-- [ ] Transaction history page
-- [ ] Admin token pricing controls
-- [ ] Auto-debit on activity
+- [x] Premium badges on content
+- [x] Content purchase flow with confirmation
+- [x] Lock/unlock UI for premium content
+- [x] Lifetime access after purchase
+- [ ] Transaction history page (deferred to Phase 8)
+- [ ] Admin pricing controls (deferred to Phase 8)
 
-**Completed:** Core token economy system with dummy payments! Premium gating and admin controls next.
+**Completed:** Phase 6 Done! Full token economy with premium content gating implemented. Users can purchase tokens and unlock premium courses/meditations.
 
 ---
 

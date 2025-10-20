@@ -321,6 +321,7 @@ export type Database = {
           scheduling_mode: string
           teacher_id: string
           title: string
+          token_cost: number
           updated_at: string
         }
         Insert: {
@@ -333,6 +334,7 @@ export type Database = {
           scheduling_mode?: string
           teacher_id: string
           title: string
+          token_cost?: number
           updated_at?: string
         }
         Update: {
@@ -345,6 +347,7 @@ export type Database = {
           scheduling_mode?: string
           teacher_id?: string
           title?: string
+          token_cost?: number
           updated_at?: string
         }
         Relationships: [
@@ -615,6 +618,7 @@ export type Database = {
           is_published: boolean
           teacher_id: string
           title: string
+          token_cost: number
           updated_at: string
         }
         Insert: {
@@ -627,6 +631,7 @@ export type Database = {
           is_published?: boolean
           teacher_id: string
           title: string
+          token_cost?: number
           updated_at?: string
         }
         Update: {
@@ -639,6 +644,7 @@ export type Database = {
           is_published?: boolean
           teacher_id?: string
           title?: string
+          token_cost?: number
           updated_at?: string
         }
         Relationships: [
@@ -854,6 +860,33 @@ export type Database = {
           },
         ]
       }
+      user_purchases: {
+        Row: {
+          entity_id: string
+          entity_type: string
+          id: string
+          purchased_at: string
+          token_cost: number
+          user_id: string
+        }
+        Insert: {
+          entity_id: string
+          entity_type: string
+          id?: string
+          purchased_at?: string
+          token_cost: number
+          user_id: string
+        }
+        Update: {
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          purchased_at?: string
+          token_cost?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -925,6 +958,15 @@ export type Database = {
       }
       process_token_purchase: {
         Args: { _amount: number; _payment_method: string; _user_id: string }
+        Returns: Json
+      }
+      purchase_content: {
+        Args: {
+          _entity_id: string
+          _entity_type: string
+          _token_cost: number
+          _user_id: string
+        }
         Returns: Json
       }
       spend_tokens: {

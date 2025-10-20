@@ -2,25 +2,39 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { usePremiumContent } from "@/hooks/usePremiumContent";
 import { Button } from "@/components/ui/button";
+import { PremiumBadge } from "@/components/PremiumBadge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AudioPlayer from "@/components/AudioPlayer";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Play, CheckCircle, Lock } from "lucide-react";
+import { Loader2, ArrowLeft, Play, CheckCircle, Lock, Coins } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function CourseDetail() {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { purchased, purchasing, purchaseContent } = usePremiumContent('course', courseId);
   const [loading, setLoading] = useState(true);
   const [course, setCourse] = useState<any>(null);
   const [sessions, setSessions] = useState<any[]>([]);
   const [enrollment, setEnrollment] = useState<any>(null);
   const [progress, setProgress] = useState<any[]>([]);
   const [currentSession, setCurrentSession] = useState<any>(null);
+  const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
 
   useEffect(() => {
     loadCourseData();
@@ -81,6 +95,12 @@ export default function CourseDetail() {
   };
 
   const handleEnroll = async () => {
+    // Check if course requires payment
+    if (course?.token_cost > 0 && !purchased) {
+      setShowPurchaseDialog(true);
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from("course_enrollments")
@@ -96,6 +116,15 @@ export default function CourseDetail() {
     } catch (error: any) {
       console.error("Error enrolling:", error);
       toast.error("Failed to enroll in course");
+    }
+  };
+
+  const handlePurchase = async () => {
+    const success = await purchaseContent(course.token_cost);
+    if (success) {
+      setShowPurchaseDialog(false);
+      // Auto-enroll after purchase
+      handleEnroll();
     }
   };
 
@@ -193,7 +222,8 @@ export default function CourseDetail() {
                 <span className="text-4xl ml-4">{course.categories.icon}</span>
               )}
             </div>
-            <div className="flex items-center gap-4 mt-4">
+            <div className="flex items-center gap-4 mt-4 flex-wrap">
+              <PremiumBadge tokenCost={course.token_cost} purchased={purchased} />
               {course.categories && (
                 <Badge variant="secondary">{course.categories.name}</Badge>
               )}
@@ -205,8 +235,15 @@ export default function CourseDetail() {
           </CardHeader>
           <CardContent>
             {!enrollment ? (
-              <Button onClick={handleEnroll} className="w-full">
-                Enroll in Course
+              <Button onClick={handleEnroll} className="w-full" disabled={purchasing}>
+                {course.token_cost > 0 && !purchased ? (
+                  <>
+                    <Coins className="mr-2 h-4 w-4" />
+                    Unlock for {course.token_cost} tokens
+                  </>
+                ) : (
+                  'Enroll in Course'
+                )}
               </Button>
             ) : (
               <div className="text-sm text-muted-foreground">
@@ -215,6 +252,27 @@ export default function CourseDetail() {
             )}
           </CardContent>
         </Card>
+
+        {/* Purchase Confirmation Dialog */}
+        <AlertDialog open={showPurchaseDialog} onOpenChange={setShowPurchaseDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <Coins className="h-5 w-5 text-primary" />
+                Unlock Premium Course
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This course costs {course?.token_cost} tokens. Once purchased, you'll have lifetime access to all sessions.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handlePurchase} disabled={purchasing}>
+                {purchasing ? 'Processing...' : `Unlock for ${course?.token_cost} tokens`}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {currentSession ? (
           <div className="space-y-4">

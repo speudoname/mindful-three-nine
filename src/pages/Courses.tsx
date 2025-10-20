@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Search, Play } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { PremiumBadge } from "@/components/PremiumBadge";
 
 export default function Courses() {
   const navigate = useNavigate();
@@ -164,13 +165,16 @@ export default function Courses() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-sm flex-wrap gap-2">
                           <span className="text-muted-foreground">
                             By {course.teachers?.profiles?.full_name || "Unknown"}
                           </span>
-                          {course.categories && (
-                            <Badge variant="secondary">{course.categories.name}</Badge>
-                          )}
+                          <div className="flex items-center gap-2">
+                            <PremiumBadge tokenCost={course.token_cost} compact />
+                            {course.categories && (
+                              <Badge variant="secondary">{course.categories.name}</Badge>
+                            )}
+                          </div>
                         </div>
                         <Button className="w-full" size="sm">
                           <Play className="mr-2 h-4 w-4" />
@@ -212,13 +216,16 @@ export default function Courses() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-sm flex-wrap gap-2">
                           <span className="text-muted-foreground">
                             {meditation.duration_minutes} minutes
                           </span>
-                          {meditation.categories && (
-                            <Badge variant="secondary">{meditation.categories.name}</Badge>
-                          )}
+                          <div className="flex items-center gap-2">
+                            <PremiumBadge tokenCost={meditation.token_cost} compact />
+                            {meditation.categories && (
+                              <Badge variant="secondary">{meditation.categories.name}</Badge>
+                            )}
+                          </div>
                         </div>
                         <div className="text-xs text-muted-foreground">
                           By {meditation.teachers?.profiles?.full_name || "Unknown"}

@@ -1,23 +1,47 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { usePremiumContent } from "@/hooks/usePremiumContent";
 import { Button } from "@/components/ui/button";
+import { PremiumBadge } from "@/components/PremiumBadge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import AudioPlayer from "@/components/AudioPlayer";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, Coins, Lock } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function MeditationDetail() {
   const { meditationId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { purchased, purchasing, purchaseContent } = usePremiumContent('meditation', meditationId);
   const [loading, setLoading] = useState(true);
   const [meditation, setMeditation] = useState<any>(null);
+  const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
+  const [canPlay, setCanPlay] = useState(false);
 
   useEffect(() => {
     loadMeditation();
   }, [meditationId]);
+
+  useEffect(() => {
+    // Update canPlay when meditation or purchased status changes
+    if (meditation) {
+      setCanPlay(meditation.token_cost === 0 || purchased);
+    }
+  }, [meditation, purchased]);
 
   const loadMeditation = async () => {
     try {
@@ -38,6 +62,14 @@ export default function MeditationDetail() {
       toast.error("Failed to load meditation");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUnlock = async () => {
+    const success = await purchaseContent(meditation.token_cost);
+    if (success) {
+      setShowPurchaseDialog(false);
+      setCanPlay(true);
     }
   };
 
@@ -78,7 +110,8 @@ export default function MeditationDetail() {
                 <span className="text-4xl ml-4">{meditation.categories.icon}</span>
               )}
             </div>
-            <div className="flex items-center gap-4 mt-4">
+            <div className="flex items-center gap-4 mt-4 flex-wrap">
+              <PremiumBadge tokenCost={meditation.token_cost} purchased={purchased} />
               {meditation.categories && (
                 <Badge variant="secondary">{meditation.categories.name}</Badge>
               )}
@@ -90,10 +123,49 @@ export default function MeditationDetail() {
           </CardHeader>
         </Card>
 
-        <AudioPlayer
-          audioUrl={meditation.audio_url}
-          title={meditation.title}
-        />
+        {!canPlay ? (
+          <Card>
+            <CardContent className="pt-6 text-center space-y-4">
+              <Lock className="h-12 w-12 mx-auto text-muted-foreground" />
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Premium Content</h3>
+                <p className="text-muted-foreground mb-4">
+                  This meditation requires {meditation.token_cost} tokens to unlock
+                </p>
+              </div>
+              <Button onClick={() => setShowPurchaseDialog(true)} disabled={purchasing}>
+                <Coins className="mr-2 h-4 w-4" />
+                Unlock for {meditation.token_cost} tokens
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <AudioPlayer
+            audioUrl={meditation.audio_url}
+            title={meditation.title}
+          />
+        )}
+
+        {/* Purchase Confirmation Dialog */}
+        <AlertDialog open={showPurchaseDialog} onOpenChange={setShowPurchaseDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <Coins className="h-5 w-5 text-primary" />
+                Unlock Premium Meditation
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This meditation costs {meditation?.token_cost} tokens. Once purchased, you'll have lifetime access.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleUnlock} disabled={purchasing}>
+                {purchasing ? 'Processing...' : `Unlock for ${meditation?.token_cost} tokens`}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
