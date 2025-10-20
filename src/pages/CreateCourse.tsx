@@ -97,9 +97,27 @@ export default function CreateCourse() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title || !description || sessions.some(s => !s.title || !s.audioUrl)) {
-      toast.error("Please fill in all required fields");
+    // Detailed validation
+    if (!title) {
+      toast.error("Please enter a course title");
       return;
+    }
+    if (!description) {
+      toast.error("Please enter a course description");
+      return;
+    }
+    
+    // Check each session
+    for (let i = 0; i < sessions.length; i++) {
+      const session = sessions[i];
+      if (!session.title) {
+        toast.error(`Session ${i + 1}: Please enter a title`);
+        return;
+      }
+      if (!session.audioUrl) {
+        toast.error(`Session ${i + 1}: Please upload an audio file`);
+        return;
+      }
     }
 
     setSaving(true);
@@ -290,8 +308,8 @@ export default function CreateCourse() {
                         />
                       </div>
 
-                      <div>
-                        <Label>Audio File *</Label>
+                       <div>
+                        <Label className="text-destructive">Audio File * (Required)</Label>
                         <FileUpload
                           bucket="course-audio"
                           accept="audio/*"
@@ -299,8 +317,10 @@ export default function CreateCourse() {
                           onUploadComplete={(url) => handleSessionChange(index, "audioUrl", url)}
                           label="Upload Audio"
                         />
-                        {session.audioUrl && (
-                          <p className="text-sm text-muted-foreground mt-2">Audio uploaded ✓</p>
+                        {session.audioUrl ? (
+                          <p className="text-sm text-green-600 mt-2">✓ Audio uploaded</p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground mt-2">⚠️ Audio file is required</p>
                         )}
                       </div>
 

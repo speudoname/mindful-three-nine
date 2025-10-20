@@ -66,8 +66,16 @@ export default function CreateMeditation() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title || !description || !audioUrl) {
-      toast.error("Please fill in all required fields");
+    if (!title) {
+      toast.error("Please enter a meditation title");
+      return;
+    }
+    if (!description) {
+      toast.error("Please enter a description");
+      return;
+    }
+    if (!audioUrl) {
+      toast.error("Please upload an audio file");
       return;
     }
 
@@ -169,7 +177,7 @@ export default function CreateMeditation() {
               </div>
 
               <div>
-                <Label>Audio File *</Label>
+                <Label className="text-destructive">Audio File * (Required)</Label>
                 <FileUpload
                   bucket="meditation-audio"
                   accept="audio/*"
@@ -177,8 +185,10 @@ export default function CreateMeditation() {
                   onUploadComplete={setAudioUrl}
                   label="Upload Audio"
                 />
-                {audioUrl && (
-                  <p className="text-sm text-muted-foreground mt-2">Audio uploaded ✓</p>
+                {audioUrl ? (
+                  <p className="text-sm text-green-600 mt-2">✓ Audio uploaded</p>
+                ) : (
+                  <p className="text-sm text-muted-foreground mt-2">⚠️ Audio file is required</p>
                 )}
               </div>
 
