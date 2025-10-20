@@ -13,11 +13,11 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ---
 
-## 📊 Overall Progress: 33%
+## 📊 Overall Progress: 42%
 
 - ✅ **Completed:** 3 phases
-- 🚧 **In Progress:** 0 items
-- ⏳ **Not Started:** 8 phases remaining
+- 🚧 **In Progress:** 1 phase (Phase 4)
+- ⏳ **Not Started:** 7 phases remaining
 
 ---
 
@@ -120,23 +120,23 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ---
 
-## Phase 4: Guided Content System
+## Phase 4: Guided Content System 🚧
 
 **Goal:** Teachers can upload courses and meditations; users can access them.
 
 ### Database Schema
-- [ ] `teachers` table
-- [ ] `courses` table
-- [ ] `course_sessions` table (lessons/audio files)
-- [ ] `standalone_meditations` table
-- [ ] `categories` table
-- [ ] `tags` table
-- [ ] `course_enrollments` table
-- [ ] `course_progress` table
-- [ ] Storage buckets for audio/video
+- [x] `teachers` table
+- [x] `courses` table
+- [x] `course_sessions` table (lessons/audio files)
+- [x] `standalone_meditations` table
+- [x] `categories` table
+- [x] `tags` table
+- [x] `course_enrollments` table
+- [x] `course_progress` table
+- [x] Storage buckets for audio/video
 
 ### Teacher Dashboard
-- [ ] Teacher registration/approval flow
+- [x] Teacher registration/approval flow
 - [ ] Upload audio (required)
 - [ ] Upload intro video (optional)
 - [ ] Assign categories/tags
@@ -149,16 +149,16 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 - [ ] View analytics dashboard
 
 ### User Experience
-- [ ] Browse courses by category/tag
+- [x] Browse courses by category/tag
 - [ ] Enroll in courses
 - [ ] Course detail page
 - [ ] Session player (audio)
 - [ ] Progress tracking (per-session, minute-level)
 - [ ] Resume from last offset
-- [ ] Standalone meditation browser
-- [ ] Filter by teacher/theme/duration
+- [x] Standalone meditation browser
+- [x] Filter by teacher/theme/duration
 
-**Estimated Completion:** TBD
+**Status:** Database & basic UI complete. Need audio player, course detail pages, and enrollment flow.
 
 ---
 
@@ -366,12 +366,12 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ## 📌 Current Sprint Focus
 
-**Status:** Phase 3 Complete (Breathing) → Moving to Phase 4 (Guided Content System)
+**Status:** Phase 4 In Progress (Guided Content System)
 
 **Next 3 Tasks:**
-1. Design guided content database schema (teachers, courses, sessions)
-2. Create teacher dashboard for content uploads
-3. Build user course browsing and playback experience
+1. Build audio player component for courses and meditations
+2. Create course detail and enrollment pages
+3. Implement file upload for teachers (audio/video)
 
 ---
 

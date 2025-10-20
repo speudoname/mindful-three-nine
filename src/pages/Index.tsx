@@ -66,7 +66,7 @@ const Index = () => {
 
             {/* CTA */}
             <div className="space-y-4">
-              <div className="flex gap-4 justify-center">
+              <div className="flex flex-wrap gap-4 justify-center">
                 <Button 
                   size="lg" 
                   className="bg-gradient-sacred hover:shadow-glow transition-all text-lg px-8 py-6 h-auto"
@@ -81,6 +81,24 @@ const Index = () => {
                     className="text-lg px-8 py-6 h-auto"
                   >
                     Breathing Exercises
+                  </Button>
+                </Link>
+                <Link to="/courses">
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="text-lg px-8 py-6 h-auto"
+                  >
+                    Guided Courses
+                  </Button>
+                </Link>
+                <Link to="/teacher">
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="text-lg px-8 py-6 h-auto"
+                  >
+                    Teacher Dashboard
                   </Button>
                 </Link>
               </div>
