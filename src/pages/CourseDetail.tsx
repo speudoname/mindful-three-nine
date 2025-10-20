@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AudioPlayer from "@/components/AudioPlayer";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft, Play, CheckCircle, Lock } from "lucide-react";
+import Navigation from "@/components/Navigation";
 
 export default function CourseDetail() {
   const { courseId } = useParams();
@@ -175,16 +176,9 @@ export default function CourseDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/courses")}
-          className="mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Courses
-        </Button>
+    <div className="min-h-screen bg-background">
+      <Navigation showBack />
+      <div className="max-w-4xl mx-auto p-4 md:p-8">
 
         <Card className="mb-6">
           <CardHeader>

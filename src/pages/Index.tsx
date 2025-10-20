@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import MeditationTimer from "@/components/MeditationTimer";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import Navigation from "@/components/Navigation";
 
 const Index = () => {
   const { user, signOut } = useAuth();
@@ -11,24 +12,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="border-b border-border/50 backdrop-blur-sm bg-card/30">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-gradient-sacred flex items-center justify-center shadow-glow">
-              <span className="text-xl font-bold">9</span>
-            </div>
-            <h1 className="text-xl font-semibold">Sacred Practice</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link to="/progress">
-              <Button variant="ghost" size="sm">Progress</Button>
-            </Link>
-            <span className="text-sm text-muted-foreground">{user?.email}</span>
-            <Button variant="outline" size="sm" onClick={signOut}>Sign Out</Button>
-          </div>
-        </div>
-      </header>
+      <Navigation />
 
       {!showTimer ? (
         // Landing View

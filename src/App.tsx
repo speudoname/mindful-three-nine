@@ -8,7 +8,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
-import BreathingExercise from "@/components/BreathingExercise";
+import Breathing from "./pages/Breathing";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
@@ -29,7 +29,7 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-            <Route path="/breathing" element={<ProtectedRoute><BreathingExercise /></ProtectedRoute>} />
+            <Route path="/breathing" element={<ProtectedRoute><Breathing /></ProtectedRoute>} />
             <Route path="/teacher" element={<ProtectedRoute><TeacherDashboard /></ProtectedRoute>} />
             <Route path="/teacher/create-course" element={<ProtectedRoute><CreateCourse /></ProtectedRoute>} />
             <Route path="/teacher/create-meditation" element={<ProtectedRoute><CreateMeditation /></ProtectedRoute>} />

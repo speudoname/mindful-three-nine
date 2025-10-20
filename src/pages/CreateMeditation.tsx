@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import FileUpload from "@/components/FileUpload";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft } from "lucide-react";
+import Navigation from "@/components/Navigation";
 
 export default function CreateMeditation() {
   const navigate = useNavigate();
@@ -105,16 +106,9 @@ export default function CreateMeditation() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-2xl mx-auto">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/teacher")}
-          className="mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Dashboard
-        </Button>
+    <div className="min-h-screen bg-background">
+      <Navigation showBack />
+      <div className="max-w-2xl mx-auto p-4 md:p-8">
 
         <Card>
           <CardHeader>

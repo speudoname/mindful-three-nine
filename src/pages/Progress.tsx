@@ -10,6 +10,7 @@ import { Loader2, Flame, Trophy, Target, Calendar, TrendingUp, Trash2 } from "lu
 import { toast } from "sonner";
 import PracticePlanDialog from "@/components/PracticePlanDialog";
 import GoalDialog from "@/components/GoalDialog";
+import Navigation from "@/components/Navigation";
 
 export default function Progress() {
   const { user } = useAuth();
@@ -123,8 +124,9 @@ export default function Progress() {
   const meditationStreak = streaks.find(s => s.streak_type === "meditation");
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <div className="max-w-6xl mx-auto p-4 md:p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Your Progress</h1>
           <p className="text-muted-foreground">

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import AudioPlayer from "@/components/AudioPlayer";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft } from "lucide-react";
+import Navigation from "@/components/Navigation";
 
 export default function MeditationDetail() {
   const { meditationId } = useParams();
@@ -61,17 +62,9 @@ export default function MeditationDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/courses")}
-          className="mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Meditations
-        </Button>
-
+    <div className="min-h-screen bg-background">
+      <Navigation showBack />
+      <div className="max-w-4xl mx-auto p-4 md:p-8">
         <Card className="mb-6">
           <CardHeader>
             <div className="flex items-start justify-between">
