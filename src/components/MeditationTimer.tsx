@@ -1,260 +1,328 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, Play, Pause, Square } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { Play, Pause, RotateCcw, ChevronLeft } from "lucide-react";
 
 interface MeditationTimerProps {
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 const MeditationTimer = ({ onBack }: MeditationTimerProps) => {
-  const [selectedDuration, setSelectedDuration] = useState<number | null>(null);
-  const [selectedInterval, setSelectedInterval] = useState<number | null>(null);
-  const [countdown, setCountdown] = useState<number | null>(null);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  
+  // Timer state
+  const [duration, setDuration] = useState(9);
+  const [interval, setInterval] = useState(3);
+  const [timeRemaining, setTimeRemaining] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(0);
-  const [totalTime, setTotalTime] = useState(0);
+  const [countdown, setCountdown] = useState(-1);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [showSettings, setShowSettings] = useState(true);
 
-  // Presets based on 3/9 principle
-  const durationPresets = [
-    { value: 9, label: "9 min" },
-    { value: 18, label: "18 min" },
-    { value: 27, label: "27 min" },
-    { value: 45, label: "45 min" }
-  ];
+  // Presets
+  const durationPresets = [9, 18, 27];
+  const intervalPresets = [3, 6, 9];
 
-  const intervalPresets = [
-    { value: 3, label: "Every 3 min" },
-    { value: 6, label: "Every 6 min" },
-    { value: 9, label: "Every 9 min" },
-    { value: 0, label: "No intervals" }
-  ];
+  // Start countdown
+  const startCountdown = () => {
+    setCountdown(9);
+    setShowSettings(false);
+  };
 
-  // 9-second countdown before start
+  // Countdown effect
   useEffect(() => {
-    if (countdown !== null && countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
+    if (countdown > 0) {
+      const timer = window.setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => window.clearTimeout(timer);
     } else if (countdown === 0) {
-      // Start the actual meditation
-      setCountdown(null);
-      setIsRunning(true);
-      setTimeRemaining(totalTime);
+      startMeditation();
     }
-  }, [countdown, totalTime]);
+  }, [countdown]);
 
-  // Main meditation timer
+  // Start meditation session
+  const startMeditation = async () => {
+    setCountdown(-1);
+    setTimeRemaining(duration * 60);
+    setIsRunning(true);
+    setIsPaused(false);
+
+    // Create session in database
+    try {
+      const { data, error } = await supabase
+        .from('meditation_sessions')
+        .insert({
+          user_id: user?.id,
+          session_type: 'timer',
+          duration_minutes: duration,
+          interval_minutes: interval,
+          status: 'started'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      setSessionId(data.id);
+    } catch (error) {
+      console.error('Error creating session:', error);
+      toast({
+        title: "Error",
+        description: "Failed to start session tracking",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Complete session
+  const handleComplete = async () => {
+    setIsRunning(false);
+    const minutesMeditated = duration;
+
+    if (sessionId) {
+      await supabase
+        .from('meditation_sessions')
+        .update({
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          total_minutes_meditated: minutesMeditated
+        })
+        .eq('id', sessionId);
+    }
+
+    toast({
+      title: "Session Complete",
+      description: `You meditated for ${minutesMeditated} minutes`,
+    });
+
+    setShowSettings(true);
+    setSessionId(null);
+  };
+
+  // Timer tick effect
   useEffect(() => {
     if (isRunning && !isPaused && timeRemaining > 0) {
-      const timer = setInterval(() => {
-        setTimeRemaining((prev) => {
-          const newTime = prev - 1;
-          
-          // Check for interval bells
-          if (selectedInterval && selectedInterval > 0) {
-            const secondsElapsed = totalTime - newTime;
-            const intervalSeconds = selectedInterval * 60;
-            if (secondsElapsed > 0 && secondsElapsed % intervalSeconds === 0) {
-              // TODO: Play interval sound
-              console.log("Interval bell!");
-            }
-          }
-          
-          return newTime;
-        });
+      const timer = window.setInterval(() => {
+        setTimeRemaining(prev => prev - 1);
       }, 1000);
-      return () => clearInterval(timer);
-    } else if (timeRemaining === 0 && isRunning) {
-      // Meditation complete
+
+      return () => window.clearInterval(timer);
+    } else if (isRunning && timeRemaining === 0) {
       handleComplete();
     }
-  }, [isRunning, isPaused, timeRemaining, selectedInterval, totalTime]);
+  }, [isRunning, isPaused, timeRemaining]);
 
-  const startCountdown = () => {
-    if (selectedDuration && selectedInterval !== null) {
-      setTotalTime(selectedDuration * 60); // Convert to seconds
-      setCountdown(9); // 9-second countdown
+  // Pause/Resume
+  const togglePause = async () => {
+    if (isPaused) {
+      // Resume
+      setIsPaused(false);
+      if (sessionId) {
+        await supabase
+          .from('meditation_sessions')
+          .update({ status: 'resumed', resumed_at: new Date().toISOString() })
+          .eq('id', sessionId);
+      }
+    } else {
+      // Pause
+      setIsPaused(true);
+      if (sessionId) {
+        await supabase
+          .from('meditation_sessions')
+          .update({ status: 'paused', paused_at: new Date().toISOString() })
+          .eq('id', sessionId);
+      }
     }
   };
 
-  const togglePause = () => {
-    setIsPaused(!isPaused);
-  };
+  // Reset/Abandon
+  const handleReset = async () => {
+    if (isRunning && sessionId) {
+      const minutesMeditated = Math.floor((duration * 60 - timeRemaining) / 60);
+      await supabase
+        .from('meditation_sessions')
+        .update({
+          status: 'abandoned',
+          abandoned_at: new Date().toISOString(),
+          total_minutes_meditated: minutesMeditated
+        })
+        .eq('id', sessionId);
+    }
 
-  const handleStop = () => {
-    // Reset everything
     setIsRunning(false);
     setIsPaused(false);
-    setCountdown(null);
     setTimeRemaining(0);
-    setTotalTime(0);
+    setCountdown(-1);
+    setSessionId(null);
+    setShowSettings(true);
   };
 
-  const handleComplete = () => {
-    // TODO: Track completion, update streaks
-    console.log("Meditation complete!");
-    handleStop();
-  };
-
+  // Format time display
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Countdown view
-  if (countdown !== null) {
-    return (
-      <div className="w-full max-w-md mx-auto text-center">
-        <div className="mb-12">
-          <div className="text-9xl font-bold text-primary animate-glow mb-6">
-            {countdown}
-          </div>
-          <p className="text-lg text-muted-foreground">Preparing your space...</p>
-        </div>
-      </div>
-    );
-  }
+  // Calculate progress percentage
+  const progress = duration > 0 ? ((duration * 60 - timeRemaining) / (duration * 60)) * 100 : 0;
 
-  // Active meditation view
-  if (isRunning) {
-    const progress = ((totalTime - timeRemaining) / totalTime) * 100;
-    
-    return (
-      <div className="w-full max-w-md mx-auto text-center space-y-12">
-        {/* Main timer display */}
-        <div className="relative">
-          {/* Progress ring */}
-          <svg className="w-64 h-64 mx-auto -rotate-90" viewBox="0 0 200 200">
-            <circle
-              cx="100"
-              cy="100"
-              r="90"
-              fill="none"
-              stroke="hsl(var(--muted))"
-              strokeWidth="4"
-              opacity="0.3"
-            />
-            <circle
-              cx="100"
-              cy="100"
-              r="90"
-              fill="none"
-              stroke="url(#gradient)"
-              strokeWidth="4"
-              strokeDasharray={`${2 * Math.PI * 90}`}
-              strokeDashoffset={`${2 * Math.PI * 90 * (1 - progress / 100)}`}
-              strokeLinecap="round"
-              className="transition-all duration-1000"
-            />
-            <defs>
-              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="hsl(var(--primary))" />
-                <stop offset="100%" stopColor="hsl(var(--accent))" />
-              </linearGradient>
-            </defs>
-          </svg>
-          
-          {/* Time display */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-6xl font-bold text-foreground">
-              {formatTime(timeRemaining)}
+  return (
+    <div className="w-full max-w-2xl mx-auto space-y-8">
+      {showSettings && countdown === -1 && !isRunning && (
+        <Card className="p-8 bg-card/50 backdrop-blur-sm space-y-6">
+          {onBack && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="mb-4"
+            >
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+          )}
+
+          <div className="text-center space-y-2 mb-6">
+            <h2 className="text-3xl font-bold">Sacred Timer</h2>
+            <p className="text-muted-foreground">Configure your meditation practice</p>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="duration" className="text-base mb-3 block">Duration (minutes)</Label>
+              <div className="flex gap-2 mb-3">
+                {durationPresets.map(preset => (
+                  <Button
+                    key={preset}
+                    variant={duration === preset ? "default" : "outline"}
+                    onClick={() => setDuration(preset)}
+                    className="flex-1"
+                  >
+                    {preset}
+                  </Button>
+                ))}
+              </div>
+              <Input
+                id="duration"
+                type="number"
+                min="1"
+                max="120"
+                value={duration}
+                onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 1))}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="interval" className="text-base mb-3 block">Interval Reminders (minutes)</Label>
+              <div className="flex gap-2 mb-3">
+                {intervalPresets.map(preset => (
+                  <Button
+                    key={preset}
+                    variant={interval === preset ? "default" : "outline"}
+                    onClick={() => setInterval(preset)}
+                    className="flex-1"
+                  >
+                    {preset}
+                  </Button>
+                ))}
+              </div>
+              <Input
+                id="interval"
+                type="number"
+                min="1"
+                max="30"
+                value={interval}
+                onChange={(e) => setInterval(Math.max(1, parseInt(e.target.value) || 1))}
+              />
             </div>
           </div>
-        </div>
 
-        {/* Controls */}
-        <div className="flex justify-center gap-4">
           <Button
+            onClick={startCountdown}
             size="lg"
-            variant="outline"
-            onClick={togglePause}
-            className="w-20 h-20 rounded-full"
+            className="w-full bg-gradient-sacred hover:shadow-glow"
           >
-            {isPaused ? <Play className="h-6 w-6" /> : <Pause className="h-6 w-6" />}
+            Begin Practice
           </Button>
-          <Button
-            size="lg"
-            variant="destructive"
-            onClick={handleStop}
-            className="w-20 h-20 rounded-full"
-          >
-            <Square className="h-6 w-6" />
-          </Button>
+        </Card>
+      )}
+
+      {countdown > 0 && (
+        <div className="text-center animate-scale-in">
+          <div className="text-9xl font-bold text-primary animate-pulse">
+            {countdown}
+          </div>
+          <p className="text-lg text-muted-foreground mt-4">Preparing your space...</p>
         </div>
+      )}
 
-        {isPaused && (
-          <p className="text-sm text-muted-foreground animate-pulse">Paused</p>
-        )}
-      </div>
-    );
-  }
+      {isRunning && countdown === -1 && (
+        <div className="space-y-8">
+          {/* Circular Progress */}
+          <div className="relative w-80 h-80 mx-auto">
+            <svg className="w-full h-full transform -rotate-90">
+              <circle
+                cx="160"
+                cy="160"
+                r="150"
+                stroke="currentColor"
+                strokeWidth="8"
+                fill="none"
+                className="text-muted"
+              />
+              <circle
+                cx="160"
+                cy="160"
+                r="150"
+                stroke="currentColor"
+                strokeWidth="8"
+                fill="none"
+                strokeDasharray={`${2 * Math.PI * 150}`}
+                strokeDashoffset={`${2 * Math.PI * 150 * (1 - progress / 100)}`}
+                className="text-primary transition-all duration-1000"
+                strokeLinecap="round"
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-6xl font-bold mb-2">{formatTime(timeRemaining)}</div>
+                <div className="text-sm text-muted-foreground">
+                  {isPaused ? 'Paused' : 'Remaining'}
+                </div>
+              </div>
+            </div>
+          </div>
 
-  // Setup view
-  return (
-    <Card className="w-full max-w-2xl mx-auto p-8 bg-card/50 backdrop-blur-sm border-primary/20">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onBack}
-        className="mb-6"
-      >
-        <ChevronLeft className="mr-2 h-4 w-4" />
-        Back
-      </Button>
-
-      <div className="space-y-8">
-        <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold">Sacred Timer</h2>
-          <p className="text-muted-foreground">Select your practice duration and interval reminders</p>
-        </div>
-
-        {/* Duration Selection */}
-        <div className="space-y-4">
-          <label className="text-sm font-medium text-foreground">Practice Duration</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {durationPresets.map((preset) => (
-              <Button
-                key={preset.value}
-                variant={selectedDuration === preset.value ? "default" : "outline"}
-                onClick={() => setSelectedDuration(preset.value)}
-                className={selectedDuration === preset.value ? "bg-gradient-sacred shadow-sacred" : ""}
-              >
-                {preset.label}
-              </Button>
-            ))}
+          {/* Controls */}
+          <div className="flex gap-4 justify-center">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={togglePause}
+              className="w-32"
+            >
+              {isPaused ? <Play className="mr-2 h-5 w-5" /> : <Pause className="mr-2 h-5 w-5" />}
+              {isPaused ? 'Resume' : 'Pause'}
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handleReset}
+              className="w-32"
+            >
+              <RotateCcw className="mr-2 h-5 w-5" />
+              Reset
+            </Button>
           </div>
         </div>
-
-        {/* Interval Selection */}
-        <div className="space-y-4">
-          <label className="text-sm font-medium text-foreground">Interval Bells</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {intervalPresets.map((preset) => (
-              <Button
-                key={preset.value}
-                variant={selectedInterval === preset.value ? "default" : "outline"}
-                onClick={() => setSelectedInterval(preset.value)}
-                className={selectedInterval === preset.value ? "bg-gradient-sacred shadow-sacred" : ""}
-              >
-                {preset.label}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {/* Start Button */}
-        <Button
-          size="lg"
-          onClick={startCountdown}
-          disabled={selectedDuration === null || selectedInterval === null}
-          className="w-full bg-gradient-sacred hover:shadow-glow transition-all text-lg py-6"
-        >
-          Begin Practice
-        </Button>
-      </div>
-    </Card>
+      )}
+    </div>
   );
 };
 

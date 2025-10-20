@@ -14,6 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
+      meditation_sessions: {
+        Row: {
+          abandoned_at: string | null
+          completed_at: string | null
+          created_at: string
+          duration_minutes: number
+          id: string
+          interval_minutes: number | null
+          paused_at: string | null
+          resumed_at: string | null
+          session_type: string
+          started_at: string
+          status: string
+          total_minutes_meditated: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          abandoned_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          duration_minutes: number
+          id?: string
+          interval_minutes?: number | null
+          paused_at?: string | null
+          resumed_at?: string | null
+          session_type?: string
+          started_at?: string
+          status?: string
+          total_minutes_meditated?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          abandoned_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          interval_minutes?: number | null
+          paused_at?: string | null
+          resumed_at?: string | null
+          session_type?: string
+          started_at?: string
+          status?: string
+          total_minutes_meditated?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meditation_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -38,6 +97,33 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      sound_library: {
+        Row: {
+          created_at: string
+          file_url: string
+          id: string
+          name: string
+          sound_type: string
+          theme_pack: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_url: string
+          id?: string
+          name: string
+          sound_type: string
+          theme_pack?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_url?: string
+          id?: string
+          name?: string
+          sound_type?: string
+          theme_pack?: string | null
         }
         Relationships: []
       }
