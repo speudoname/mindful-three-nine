@@ -13,10 +13,10 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ---
 
-## 📊 Overall Progress: 42%
+## 📊 Overall Progress: 48%
 
 - ✅ **Completed:** 3 phases
-- 🚧 **In Progress:** 1 phase (Phase 4)
+- 🚧 **In Progress:** 1 phase (Phase 4 - 85% complete)
 - ⏳ **Not Started:** 7 phases remaining
 
 ---
@@ -137,28 +137,28 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ### Teacher Dashboard
 - [x] Teacher registration/approval flow
-- [ ] Upload audio (required)
-- [ ] Upload intro video (optional)
-- [ ] Assign categories/tags
-- [ ] Define scheduling mode:
-  - [ ] Linear (daily unlock)
-  - [ ] Day-part windows
-  - [ ] Freeform
-  - [ ] Challenge mode
-- [ ] Publish/unpublish courses
+- [x] Upload audio (FileUpload component ready)
+- [x] Upload intro video (FileUpload component ready)
+- [ ] Assign categories/tags (UI needed)
+- [x] Define scheduling mode (database ready):
+  - [x] Linear (daily unlock)
+  - [x] Day-part windows
+  - [x] Freeform
+  - [x] Challenge mode
+- [ ] Publish/unpublish courses (UI needed)
 - [ ] View analytics dashboard
 
 ### User Experience
 - [x] Browse courses by category/tag
-- [ ] Enroll in courses
-- [ ] Course detail page
-- [ ] Session player (audio)
-- [ ] Progress tracking (per-session, minute-level)
-- [ ] Resume from last offset
+- [x] Enroll in courses
+- [x] Course detail page
+- [x] Session player (audio)
+- [x] Progress tracking (per-session, minute-level)
+- [x] Resume from last offset
 - [x] Standalone meditation browser
 - [x] Filter by teacher/theme/duration
 
-**Status:** Database & basic UI complete. Need audio player, course detail pages, and enrollment flow.
+**Status:** Core functionality complete! File upload for teachers and advanced features remain.
 
 ---
 
@@ -366,12 +366,13 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ## 📌 Current Sprint Focus
 
-**Status:** Phase 4 In Progress (Guided Content System)
+**Status:** Phase 4 Nearly Complete (Guided Content System - 85%)
 
-**Next 3 Tasks:**
-1. Build audio player component for courses and meditations
-2. Create course detail and enrollment pages
-3. Implement file upload for teachers (audio/video)
+**Remaining Tasks:**
+1. Add course creation/editing UI for teachers
+2. Implement category/tag assignment UI
+3. Build publish/unpublish functionality
+4. Then move to Phase 5: Tracking & Gamification
 
 ---
 
