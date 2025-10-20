@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useTokens } from "@/hooks/useTokens";
 import { TokenPurchaseDialog } from "./TokenPurchaseDialog";
-import { ChevronLeft, Home, Sparkles, BookOpen, TrendingUp, Coins, User } from "lucide-react";
+import { ChevronLeft, Home, Sparkles, BookOpen, TrendingUp, Coins, User, Bell } from "lucide-react";
+import { NotificationBell } from "./NotificationBell";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -74,6 +75,7 @@ export default function Navigation({ showBack = false }: { showBack?: boolean })
           </nav>
 
           <div className="flex items-center gap-3">
+            <NotificationBell />
             <TokenPurchaseDialog>
               <Button variant="outline" size="sm" className="hidden sm:flex">
                 <Coins className="h-4 w-4 mr-2 text-primary" />
@@ -98,6 +100,10 @@ export default function Navigation({ showBack = false }: { showBack?: boolean })
                 <DropdownMenuItem onClick={() => navigate("/progress")}>
                   <TrendingUp className="h-4 w-4 mr-2" />
                   Progress
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/notifications/settings")}>
+                  <Bell className="h-4 w-4 mr-2" />
+                  Notifications
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={signOut} className="text-red-500">

@@ -509,6 +509,81 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          achievement_alerts: boolean
+          course_reminders: boolean
+          created_at: string
+          id: string
+          practice_reminders: boolean
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          system_notifications: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_alerts?: boolean
+          course_reminders?: boolean
+          created_at?: string
+          id?: string
+          practice_reminders?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          system_notifications?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_alerts?: boolean
+          course_reminders?: boolean
+          created_at?: string
+          id?: string
+          practice_reminders?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          system_notifications?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       practice_plans: {
         Row: {
           created_at: string
@@ -948,6 +1023,16 @@ export type Database = {
       check_and_award_badges: {
         Args: { _user_id: string }
         Returns: undefined
+      }
+      create_notification: {
+        Args: {
+          _action_url?: string
+          _message: string
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: string
       }
       has_role: {
         Args: {
