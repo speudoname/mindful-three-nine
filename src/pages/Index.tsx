@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import MeditationTimer from "@/components/MeditationTimer";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
+  const { user, signOut } = useAuth();
   const [showTimer, setShowTimer] = useState(false);
 
   return (
@@ -17,7 +19,10 @@ const Index = () => {
             </div>
             <h1 className="text-xl font-semibold">Sacred Practice</h1>
           </div>
-          <Button variant="outline" size="sm">Sign In</Button>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground">{user?.email}</span>
+            <Button variant="outline" size="sm" onClick={signOut}>Sign Out</Button>
+          </div>
         </div>
       </header>
 
