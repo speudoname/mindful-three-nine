@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface AuthContextType {
   user: User | null;
@@ -54,9 +55,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       
       if (error) throw error;
+      toast.success('Account created successfully!');
       return { error: null };
     } catch (error) {
       console.error('Sign up error:', error);
+      const authError = error as AuthError;
+      toast.error(authError.message || 'Failed to sign up. Please try again.');
       return { error: error as Error };
     }
   };
@@ -69,16 +73,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       
       if (error) throw error;
+      
+      toast.success('Signed in successfully!');
       return { error: null };
     } catch (error) {
       console.error('Sign in error:', error);
+      const authError = error as AuthError;
+      
+      if (authError.message?.includes('Invalid login credentials')) {
+        toast.error('Invalid email or password. Please try again.');
+      } else if (authError.message?.includes('Email not confirmed')) {
+        toast.error('Please confirm your email before signing in.');
+      } else {
+        toast.error(authError.message || 'Failed to sign in. Please try again.');
+      }
+      
       return { error: error as Error };
     }
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/auth');
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast.success('Signed out successfully');
+      navigate('/auth');
+    } catch (error) {
+      console.error('Sign out error:', error);
+      const authError = error as AuthError;
+      toast.error(authError.message || 'Failed to sign out. Please try again.');
+    }
   };
 
   return (

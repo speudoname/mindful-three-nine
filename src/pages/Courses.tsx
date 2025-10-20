@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Search, Play } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { toast } from "sonner";
 
 export default function Courses() {
   const navigate = useNavigate();
@@ -26,15 +27,16 @@ export default function Courses() {
   const loadContent = async () => {
     try {
       // Load categories
-      const { data: categoriesData } = await supabase
+      const { data: categoriesData, error: categoriesError } = await supabase
         .from("categories")
         .select("*")
         .order("name");
 
+      if (categoriesError) throw categoriesError;
       setCategories(categoriesData || []);
 
       // Load published courses
-      const { data: coursesData } = await supabase
+      const { data: coursesData, error: coursesError } = await supabase
         .from("courses")
         .select(`
           *,
@@ -44,10 +46,11 @@ export default function Courses() {
         .eq("is_published", true)
         .order("created_at", { ascending: false });
 
+      if (coursesError) throw coursesError;
       setCourses(coursesData || []);
 
       // Load published meditations
-      const { data: meditationsData } = await supabase
+      const { data: meditationsData, error: meditationsError } = await supabase
         .from("standalone_meditations")
         .select(`
           *,
@@ -57,9 +60,11 @@ export default function Courses() {
         .eq("is_published", true)
         .order("created_at", { ascending: false });
 
+      if (meditationsError) throw meditationsError;
       setMeditations(meditationsData || []);
     } catch (error) {
       console.error("Error loading content:", error);
+      toast.error("Failed to load content. Please try again.");
     } finally {
       setLoading(false);
     }
