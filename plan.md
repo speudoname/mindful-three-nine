@@ -13,11 +13,11 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ---
 
-## 📊 Overall Progress: 55%
+## 📊 Overall Progress: 65%
 
-- ✅ **Completed:** 4 phases  
-- 🚧 **In Progress:** 0 phases
-- ⏳ **Not Started:** 6 phases remaining
+- ✅ **Completed:** 4 phases
+- 🚧 **In Progress:** 1 phase (Phase 5 - 70% complete)
+- ⏳ **Not Started:** 5 phases remaining
 
 ---
 
@@ -167,24 +167,24 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 **Goal:** Personal progress tracking with streaks, badges, and goals.
 
 ### Database
-- [ ] `practice_plans` table
-- [ ] `goals` table
-- [ ] `streaks` table
-- [ ] `badges` table
-- [ ] `user_badges` table
-- [ ] `activity_history` aggregate view
+- [x] `practice_plans` table
+- [x] `goals` table
+- [x] `streaks` table
+- [x] `badges` table
+- [x] `user_badges` table
+- [x] Badge & streak functions
 
 ### Features
-- [ ] Set practice plan (once/twice daily, custom)
-- [ ] Weekly target (minutes or sessions)
-- [ ] Streak counter ("Strikes")
-- [ ] Grace rules (skip allowance)
-- [ ] Badge system
+- [x] Streak counter with grace rules
+- [x] Badge system (10 badges seeded)
+- [x] Progress dashboard UI
+- [x] Visual analytics display
+- [ ] Set practice plan UI
+- [ ] Create/manage goals UI
 - [ ] Calendar heatmap
-- [ ] Visual analytics (charts)
-- [ ] Adherence tracking (actual vs. plan)
+- [ ] Charts for trends
 
-**Status:** Ready to begin!
+**Status:** Core tracking complete, need practice plan & goal creation UI.
 
 ---
 
@@ -366,12 +366,13 @@ Build a meditation app centered on 3/9-based timing, guided courses, breathing e
 
 ## 📌 Current Sprint Focus
 
-**Status:** Phase 4 Complete! → Moving to Phase 5 (Tracking & Gamification)
+**Status:** Phase 5 In Progress (Tracking & Gamification - 70%)
 
-**Next 3 Tasks:**
-1. Create practice plans database schema
-2. Build streaks and badge system
-3. Add visual analytics and progress tracking dashboard
+**Next Tasks:**
+1. Add practice plan creation UI
+2. Build goal creation/management UI
+3. Integrate streak/badge checking into meditation components
+4. Add calendar heatmap visualization
 
 ---
 
