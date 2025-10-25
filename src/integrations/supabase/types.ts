@@ -1020,10 +1020,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      check_and_award_badges: {
-        Args: { _user_id: string }
-        Returns: undefined
-      }
+      check_and_award_badges: { Args: { _user_id: string }; Returns: undefined }
       create_notification: {
         Args: {
           _action_url?: string
