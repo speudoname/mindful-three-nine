@@ -1031,6 +1031,20 @@ export type Database = {
         }
         Returns: string
       }
+      get_courses_paginated: {
+        Args: {
+          _category_id?: string
+          _offset_value?: number
+          _page_size?: number
+        }
+        Returns: Json
+      }
+      get_user_courses_with_progress: {
+        Args: { _user_id: string }
+        Returns: Json
+      }
+      get_user_dashboard_summary: { Args: { _user_id: string }; Returns: Json }
+      get_user_progress_stats: { Args: { _user_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1060,6 +1074,18 @@ export type Database = {
           _user_id: string
         }
         Returns: Json
+      }
+      sync_meditation_session: {
+        Args: {
+          _completed_at?: string
+          _duration_minutes: number
+          _session_type: string
+          _started_at: string
+          _status: string
+          _total_minutes?: number
+          _user_id: string
+        }
+        Returns: string
       }
       update_streak: {
         Args: { _activity_date: string; _streak_type: string; _user_id: string }
